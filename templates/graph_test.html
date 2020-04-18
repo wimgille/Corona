@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History for:
+{% endblock %}
+
+{% block main %}
+
+
+<body>
+
+	<canvas id="bubble-chart" width="800" height="600"></canvas>
+
+<script>
+	new Chart(document.getElementById("bubble-chart"), {
+		type: 'bubble',
+		data: {
+		  datasets: [
+			{% for country in countries %}
+			{
+			  label: ['{{ country.country }}'],
+			  backgroundColor: "rgba(60,186,159,0.2)",
+			  borderColor: "rgba(60,186,159,1)",
+			  data: [{
+				x: {{ country.testsPerOneMillion }},
+				y: {{ country.casesPerOneMillion }},
+				r: {{ country.deathsPerOneMillion }}
+			  }]
+			},
+            {% endfor %}
+		  ]
+		},
+		options: {
+		  title: {
+			display: true,
+			text: 'Number of deaths per One Million'
+		  }, scales: {
+			yAxes: [{ 
+			  scaleLabel: {
+				display: true,
+				labelString: "Cases"
+			  }
+			}],
+			xAxes: [{ 
+			  scaleLabel: {
+				display: true,
+				labelString: "Tests"
+			  }
+			}]
+		  }
+		}
+	});
+</script>
+</body>
+{% endblock %}
+
+

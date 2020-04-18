@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Apology
+{% endblock %}
+
+{% block main %}
+
+    <!-- http://getbootstrap.com/docs/4.1/components/alerts/ -->
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">Fail!</h4>
+        <p>{{ message }}</p>
+    </div>
+
+{% endblock %}

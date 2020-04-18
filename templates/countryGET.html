@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Select your country
+{% endblock %}
+
+{% block main %}
+    
+    <div class="row">
+        <H2>Select a country:</H2>
+        <div class="col-sm-12">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Select a country
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for country in countryList %}
+                        <a class="dropdown-item" href="{{ url_for('country', country=country) }}">{{ country }}</a>
+                    {% endfor %}
+                    </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
