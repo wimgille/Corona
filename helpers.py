@@ -151,46 +151,10 @@ def ListOfDates(dictInput):
     
     return dateList
 
-def Rankings(returnFormat):
-    """
-    Returns a dataframe or JSON obejct of all countries and their individual stats on which the API has information
-    """
-
-    # Contact API
-    try:
-        response = requests.get("https://corona.lmao.ninja/v2/countries")
-        response.raise_for_status()
-    except requests.RequestException:
-        return None
-
-    # Parse response
-    try:
-        countryStats = response.json()
-        countryNames = []
-        rankingsDeaths = []
-        rankingsCases = []
-        rankingsDeathsOneMLN = []
-        rankingsCasesOneMLN = []
-
-        for i in range(len(countryStats)):
-            countryNames.append(countryStats[i]["country"])
-            rankingsDeaths.append(countryStats[i]["deaths"])
-            rankingsCases.append(countryStats[i]["cases"])
-            rankingsCasesOneMLN.append(countryStats[i]["casesPerOneMillion"])
-            rankingsDeathsOneMLN.append(countryStats[i]["deathsPerOneMillion"])
-
-        zippedList =  list(zip(countryNames, rankingsDeaths, rankingsCases, rankingsDeathsOneMLN, rankingsCasesOneMLN))
-        dfObj = pd.DataFrame(zippedList, columns = ['Name', 'Deaths', 'Cases', 'CasesOneMLN', 'DeathsOneMLN'])
-        if returnFormat == 'df':
-            return dfObj
-        elif returnFormat == 'json':
-            return countryStats
-    except (KeyError, TypeError, ValueError):
-        return None
 
 def TopList(number, returnFormat):
     """
-    Returns a dataframe or JSON object of the top xx countries and their individual stats on which the API has information
+    Returns a dataframe or JSON object of the top 'number' countries and their individual stats on which the API has information
     """
 
     # Contact API
@@ -210,6 +174,7 @@ def TopList(number, returnFormat):
         rankingsCasesOneMLN = []
         rankingsTestsOneMLN = []
 
+    # construct a list for each of the elements we need.
         for i in range(len(countryStats)):
             countryNames.append(countryStats[i]["country"])
             rankingsDeaths.append(countryStats[i]["deaths"])
@@ -218,11 +183,21 @@ def TopList(number, returnFormat):
             rankingsDeathsOneMLN.append(countryStats[i]["deathsPerOneMillion"])
             rankingsTestsOneMLN.append(countryStats[i]["testsPerOneMillion"])
 
+    # turn the lists into a dataframe and sort on the number of Deaths
         zippedList =  list(zip(countryNames, rankingsDeaths, rankingsCases, rankingsCasesOneMLN, rankingsDeathsOneMLN, rankingsTestsOneMLN))
         dfObj = pd.DataFrame(zippedList, columns = ['Name', 'Deaths', 'Cases', 'CasesOneMLN', 'DeathsOneMLN', 'TestsOneMLN'])
         dfObj = dfObj.sort_values(by=['Deaths'],ascending=False)
+
+    # decide the length of the list. Either top x or all
+        if number == 'All':
+            number = len(countryStats)-1
         dfObj = dfObj.iloc[0:number]
-        
+
+    # add the colors to the dataframe
+        colors = ColorList(number)
+        dfObj['Color'] = colors
+
+    # return a dataframe or a JSON object    
         if returnFormat == 'df':
             return dfObj
         elif returnFormat == 'json':
@@ -230,14 +205,41 @@ def TopList(number, returnFormat):
     except (KeyError, TypeError, ValueError):
         return None
 
+def ColorList(number):
+    """
+    Returns a list with RGBA color schemes including a gradient
+    """
+
+    # initialise the basic colors, from green, light green, yellow, orange to red
+    basicsTrafficLight = ['(204,50,50)','(219,123,43)','(231,180,22)','(153,193,64)','(45,201,55)']
+    
+    # define which set of basic colors we are going to use
+    basics = basicsTrafficLight
+    numIterations = (number // len(basics))+1 
+    gradients = []
+    colors = []
+
+    for i in range(numIterations):
+        gradients.append(round((i+1) / (numIterations + 1),2))    
+    gradients.reverse()
+
+    # contruct the list of colors to be returned
+    for i in range(number):
+        indexB = i // numIterations
+        indexG = i % numIterations
+        endString = int(basics[indexB].find(')'))
+        color = 'rgba'+basics[indexB][0:endString]+','+str(gradients[indexG])+')'
+        colors.append(color)
+
+    # deletele the colors at the end of the list we no longer need
+    colors=colors[0:number]
+    return colors
 
 if __name__ == "__main__":
-    
-    rankingsTotal = TopList(30, 'json')
-    rankingsTotal = json.loads(rankingsTotal)
-    
-    rankingsTotal2 = Rankings('json')
-    print(rankingsTotal)
+     
+    gr = TopList(211, 'json')
+    print(len(gr))
+
 
 
     

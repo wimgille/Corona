@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    History for:
+    Top 20 countries globally
 {% endblock %}
 
 {% block main %}
@@ -18,13 +18,13 @@
 		  datasets: [
 			{% for country in countries %}
 			{
-			  label: ['{{ country.country }}'],
-			  backgroundColor: "rgba(60,186,159,0.2)",
+			  label: ['{{ country.Name }}'],
+			  backgroundColor: "{{ country.Color }}",
 			  borderColor: "rgba(60,186,159,1)",
 			  data: [{
-				x: {{ country.testsPerOneMillion }},
-				y: {{ country.casesPerOneMillion }},
-				r: {{ country.deathsPerOneMillion }}
+				x: {{ country.TestsOneMLN }},
+				y: {{ country.CasesOneMLN }},
+				r: {{ country.DeathsOneMLN }}/5
 			  }]
 			},
             {% endfor %}
@@ -33,18 +33,18 @@
 		options: {
 		  title: {
 			display: true,
-			text: 'Number of deaths per One Million'
+			text: 'Number of Deaths per 200,000'
 		  }, scales: {
 			yAxes: [{ 
 			  scaleLabel: {
 				display: true,
-				labelString: "Cases"
+				labelString: "Cases / One Million"
 			  }
 			}],
 			xAxes: [{ 
 			  scaleLabel: {
 				display: true,
-				labelString: "Tests"
+				labelString: "Tests / One Million"
 			  }
 			}]
 		  }

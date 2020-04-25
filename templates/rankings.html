@@ -27,15 +27,15 @@
             <tr>
                 <td scope="col">'rank'</td>
                 <td scope="col">
-                    <a href="{{ url_for('country', country=country.country) }}">
-                        {{ country.country }}
+                    <a href="{{ url_for('country', country=country.Name) }}">
+                        {{ country.Name }}
                     </a>
                 </td>
-                <td scope="col">{{ country.cases }}</td>
-                <td scope="col">{{ country.deaths }}</td>
-                <td scope="col">{{ country.casesPerOneMillion }}</td>
-                <td scope="col">{{ country.deathsPerOneMillion }}</td>
-                <td scope="col">{{ country.testsPerOneMillion }}</td>
+                <td scope="col">{{ country.Cases }}</td>
+                <td scope="col">{{ country.Deaths }}</td>
+                <td scope="col">{{ country.CasesOneMLN }}</td>
+                <td scope="col">{{ country.DeathsOneMLN }}</td>
+                <td scope="col">{{ country.TestsOneMLN }}</td>
                 
             </tr>
             {% endfor %}

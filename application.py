@@ -1,6 +1,7 @@
 from flask import Flask, session, render_template, request, redirect, jsonify, json
 from flask_session import Session
-from helpers import TopList, CountryList,HeadlinesPerCountry,CountryList,HistPerCountry,ConvertToList,ListOfDates,Rankings
+from helpers import TopList, CountryList,HeadlinesPerCountry,CountryList,HistPerCountry,ConvertToList
+from helpers import ColorList,ListOfDates,Rankings
 
 app = Flask(__name__)
 
@@ -51,12 +52,15 @@ def country(country):
 @app.route("/graph")
 def graph():
 
-    rankingsJSON = TopList(20,'json')
+    numberCountries = 20
+
+    rankingsJSON = TopList(numberCountries,'json')
     rankingsJSON = json.loads(rankingsJSON)
-    return render_template("graph_new.html",countries=rankingsJSON)
+    return render_template("graph_bubble.html",countries=rankingsJSON)
 
 @app.route("/rankings")
 def rankings():
 
-    rankingsJSON = Rankings('json')
+    rankingsJSON = TopList('All','json')
+    rankingsJSON = json.loads(rankingsJSON)
     return render_template("rankings.html", countries=rankingsJSON)
