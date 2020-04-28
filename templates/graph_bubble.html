@@ -24,7 +24,7 @@
 			  data: [{
 				x: {{ country.TestsOneMLN }},
 				y: {{ country.CasesOneMLN }},
-				r: {{ country.DeathsOneMLN }}/5
+				r: {{ country.DeathsOneMLN }}/10
 			  }]
 			},
             {% endfor %}
@@ -33,7 +33,7 @@
 		options: {
 		  title: {
 			display: true,
-			text: 'Number of Deaths per 200,000'
+			text: 'Number of Deaths per 100,000'
 		  }, scales: {
 			yAxes: [{ 
 			  scaleLabel: {

@@ -16,15 +16,14 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 
 def HistPerCountry(country):
     """
-    Look up historical statistics per country. Function returns a dics with 
+    Look up historical statistics per country. Function returns a dict with 
     {"standardizedCountryName":"netherlands","history":{
     "cases":{"1/22/20":0,"1/23/20":0},
     "deaths":{"1/22/20":0,"1/23/20":0},
     "recovered":{"1/22/20":0,"1/23/20":0}
     }}   
     """
-
-    
+ 
     # Contact API
     try:
         response = requests.get(f"https://corona.lmao.ninja/v2/historical/{country}?lastdays=all")
@@ -42,9 +41,107 @@ def HistPerCountry(country):
     except (KeyError, TypeError, ValueError):
         return None
 
+def HistPerCountryLong(country):
+    """
+    Look up historical statistics per country. Function returns a dict with 
+    {"standardizedCountryName":"netherlands","history":{
+    "cases":{"1/1/20":0,"1/2/20":0},
+    "newCases":{"1/1/20":0,"1/2/20":0},
+    "casesPerOneMLN":{"1/1/20":0,"1/2/20":0}, 
+    "deaths":{"1/1/20":0,"1/2/20":0},
+    "newDeaths":{"1/1/20":0,"1/2/20":0},
+    "deathsPerOneMLN":{"1/1/20":0,"1/2/20":0},
+    "recovered":{"1/1/20":0,"1/2/20":0},
+    "newRecovered":{"1/1/20":0,"1/2/20":0},
+    "recoveredPerOneMLN":{"1/1/20":0,"1/2/20":0},
+    }}   
+    """
+
+    # load the basics and define the denominator (x million inhabitants)
+    basics = HistPerCountry(country)
+    dates = ListOfDates(basics['history']['cases'])
+    newDict = {}
+    newDict['name'] = basics['name']
+    
+    headlines = HeadlinesPerCountry(country)
+    try:
+        denom = headlines['cases']/headlines['casesPerOneMillion']
+    except ZeroDivisionError:
+        denom = 1
+
+    # create dictionaries for historical cases, new cases and number of cases per 1MLN 
+    casesT={}
+    newCases={}
+    casesPerOneMillion={}
+    currentCases = 0
+
+    for i in dates:
+        try:
+            myValue = basics['history']['cases'][i]
+            casesT[i] = myValue
+            newCases[i] = myValue - currentCases
+            casesPerOneMillion[i] = round(myValue/denom,0)
+            currentCases = myValue
+        except(KeyError):
+            casesT[i] = 0
+            newCases[i] = 0
+            casesPerOneMillion[i] = 0
+
+    # create dictionaries for historical deaths, new deaths and number of deaths per 1MLN 
+    deathsT={}
+    newDeaths={}
+    deathsPerOneMillion={}
+    currentDeaths = 0
+
+    for i in dates:
+        try:
+            myValue = basics['history']['deaths'][i]
+            deathsT[i] = myValue
+            newDeaths[i] = myValue - currentDeaths
+            deathsPerOneMillion[i] = round(myValue/denom,0)
+            currentDeaths = myValue
+        except(KeyError):
+            deathsT[i] = 0
+            newDeaths[i] = 0
+            deathsPerOneMillion[i] = 0
+
+    # create dictionaries for historical recoveries, new recoveries and number of recoveries per 1MLN 
+    recoveredT={}
+    newRecovered={}
+    recoveredPerOneMillion={}
+    currentRecovered = 0
+
+    for i in dates:
+        try:
+            myValue = basics['history']['recovered'][i]
+            recoveredT[i] = myValue
+            newRecovered[i] = myValue - currentRecovered
+            recoveredPerOneMillion[i] = round(myValue/denom,0)
+            currentRecovered = myValue
+        except(KeyError):
+            recoveredT[i] = 0
+            newRecovered[i] = 0
+            recoveredPerOneMillion[i] = 0
+
+    # patch all the dictionaries to eachother and add them to the main dict
+
+    history={}
+    history['cases'] = casesT
+    history['newCases'] = newCases
+    history['casesPerOneMLN'] = casesPerOneMillion
+    history['deaths'] = deathsT
+    history['newDeaths'] = newDeaths
+    history['deathsPerOneMLN'] = deathsPerOneMillion
+    history['recovered'] = recoveredT
+    history['newRecovered'] = newRecovered
+    history['recoveredPerOneMLN'] = recoveredPerOneMillion
+    newDict['history'] = history
+    
+    return newDict
+
 def HeadlinesPerCountry(country):
     """
-    Look up headline statistics per country. Function returns a dics with 
+    Look up headline statistics per country. Function returns a dict with 
     {"name":,
     "countryInfo":{}
     "cases":,"todayCases":,"deaths":,"todayDeaths":,"recovered":,"active":,"critical":,
@@ -237,8 +334,8 @@ def ColorList(number):
 
 if __name__ == "__main__":
      
-    gr = TopList(211, 'json')
-    print(len(gr))
+    gr = HistPerCountryLong('Netherlands')
+    print(gr)
 
 
 

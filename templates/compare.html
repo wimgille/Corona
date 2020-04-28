@@ -1,0 +1,329 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Compare Normalised Statistics
+{% endblock %}
+
+{% block main %}
+    
+    <div class="row mb-4">
+        <H2>Select another country:</H2>
+        <div class="col-sm-12">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Select your country
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {% for country in countryList %}
+                    <a class="dropdown-item" href="{{ url_for('compare', country=country) }}">{{ country }}</a>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <hr>
+
+    <div class="row mb-4">
+        <h2>Compering the Netherlands vs {{ country }}</h2>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-sm-6">
+            <canvas id="myChart2"></canvas>
+        </div>
+        <div class="col-sm-6">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+    <div class="row mb-4">    
+        <div class="col-sm-6">
+            <canvas id="myChart3"></canvas>
+        </div>
+        <div class="col-sm-6">
+            <canvas id="myChart4"></canvas>
+        </div>
+    </div>
+    
+    <script>
+        // Global parameters:
+        // do not resize the chart canvas when its container does (keep at 600x400px)
+        Chart.defaults.global.responsive = true;
+      
+        // define the chart data
+        var chartData = {
+            labels : [{% for item in dates %}
+                     "{{item}}",
+                    {% endfor %}],
+            datasets : [{
+                label: 'Deaths per 1 mln {{ country }}',
+                fill: true,
+                lineTension: 0.1,
+                backgroundColor: "rgba(224,17,95,0.4)",
+                borderColor: "rgba(75,192,192,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(75,192,192,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data : [{% for item in deaths %}
+                        {{item}},
+                      {% endfor %}],
+                spanGaps: false
+            },
+            {
+                label: 'Deaths per 1 mln Netherlands',
+                fill: true,
+                lineTension: 0.1,
+                backgroundColor: "rgba(75,192,192,0.4)",
+                borderColor: "rgba(75,192,192,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(75,192,192,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data : [{% for item in deathsNL %}
+                        {{item}},
+                      {% endfor %}],
+                spanGaps: false
+            }]      
+        }
+      
+        // get chart canvas
+        var ctx = document.getElementById("myChart").getContext("2d");
+      
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+        });
+    </script>
+  
+    <script>
+        // Global parameters:
+        // do not resize the chart canvas when its container does (keep at 600x400px)
+        Chart.defaults.global.responsive = true;
+      
+        // define the chart data
+        var chartData2 = {
+            labels : [{% for item in dates %}
+                     "{{item}}",
+                    {% endfor %}],
+            datasets : [{
+                label: 'Cases per 1 mln {{ country }}',
+                fill: true,
+                lineTension: 0.1,
+                backgroundColor: "rgba(224,17,95,0.4)",
+                borderColor: "rgba(75,192,192,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(75,192,192,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data : [{% for item in cases %}
+                        {{item}},
+                      {% endfor %}],
+                spanGaps: false
+            },
+            {
+                label: 'Cases per 1 mln Netherlands',
+                fill: true,
+                lineTension: 0.1,
+                backgroundColor: "rgba(75,192,192,0.4)",
+                borderColor: "rgba(75,192,192,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(75,192,192,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data : [{% for item in casesNL %}
+                        {{item}},
+                      {% endfor %}],
+                spanGaps: false
+            }]    
+        }
+      
+        // get chart canvas
+        var ctx2 = document.getElementById("myChart2").getContext("2d");
+      
+        // create the chart using the chart canvas
+        var myChart2 = new Chart(ctx2, {
+            type: 'bar',
+            data: chartData2,
+        });
+    </script>
+
+    <script>
+        // Global parameters:
+        // do not resize the chart canvas when its container does (keep at 600x400px)
+        Chart.defaults.global.responsive = true;
+  
+        // define the chart data
+        var chartData3 = {
+        labels : [{% for item in dates %}
+                 "{{item}}",
+                {% endfor %}],
+        datasets : [{
+            label: 'New Cases for {{ country }}',
+            fill: true,
+            lineTension: 0.1,
+            backgroundColor: "rgba(224,17,95,0.4)",
+            borderColor: "rgba(75,192,192,1)",
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: "rgba(75,192,192,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data : [{% for item in newcases %}
+                    {{item}},
+                  {% endfor %}],
+            spanGaps: false
+            },
+            {
+            label: 'New Cases for the Netherlands',
+            fill: true,
+            lineTension: 0.1,
+            backgroundColor: "rgba(75,192,192,0.4)",
+            borderColor: "rgba(75,192,192,1)",
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: "rgba(75,192,192,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data : [{% for item in newcasesNL %}
+                    {{item}},
+                  {% endfor %}],
+            spanGaps: false
+            }]          
+        }
+  
+    // get chart canvas
+    var ctx3 = document.getElementById("myChart3").getContext("2d");
+  
+    // create the chart using the chart canvas
+    var myChart3 = new Chart(ctx3, {
+        type: 'bar',
+        data: chartData3,
+    });
+</script>
+
+<script>
+    // Global parameters:
+    // do not resize the chart canvas when its container does (keep at 600x400px)
+    Chart.defaults.global.responsive = true;
+  
+    // define the chart data
+    var chartData4 = {
+        labels : [{% for item in dates %}
+                 "{{item}}",
+                {% endfor %}],
+        datasets : [{
+            label: 'New Deaths for {{ country }}',
+            fill: true,
+            lineTension: 0.1,
+            backgroundColor: "rgba(224,17,95,0.4)",
+            borderColor: "rgba(75,192,192,1)",
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: "rgba(75,192,192,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data : [{% for item in newdeaths %}
+                    {{item}},
+                  {% endfor %}],
+            spanGaps: false
+        },
+        {
+            label: 'New Deaths for the Netherlands',
+            fill: true,
+            lineTension: 0.1,
+            backgroundColor: "rgba(75,192,192,0.4)",
+            borderColor: "rgba(75,192,192,1)",
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: "rgba(75,192,192,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data : [{% for item in newdeathsNL %}
+                    {{item}},
+                  {% endfor %}],
+            spanGaps: false
+        }]      
+    }
+  
+    // get chart canvas
+    var ctx4 = document.getElementById("myChart4").getContext("2d");
+  
+    // create the chart using the chart canvas
+    var myChart4 = new Chart(ctx4, {
+        type: 'bar',
+        data: chartData4,
+    });
+</script>
+
+{% endblock %}
+
