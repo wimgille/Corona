@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Select your country
+{% endblock %}
+
+{% block main %}
+    
+
+
+<div class="containter-fluid">
+<form action="/compare" method="post" id="compForm">
+    <div class="row" style="padding-bottom: 50px;">
+        <div class="col-sm-4" style="padding-bottom: 100px;">
+            <div class="bs-example">
+                <h2>Country 1: </h2>
+                <input type="text" class="typeahead tt-query" autocomplete="off" spellcheck="false" name="country1" style="width: 150%">
+            </div>
+        </div>
+        <div class="col-sm-4" style="padding-bottom: 100px;">
+            <div class="bs-example">
+                <h2>Country 2: </h2>
+                <input type="text" class="typeahead tt-query" autocomplete="off" spellcheck="false" name="country2" style="width: 150%">
+            </div>
+        </div>
+        <div class="col-sm-4" style="padding-top: 40px;" style="padding-bottom: 100px;">
+            <button class="btn btn-primary" type="submit">Compare</button>
+        </div>
+    </div>
+</form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        // Defining the local dataset
+        var countries = [{% for item in countryList %} "{{item}}", {% endfor %}];
+
+        // Constructing the suggestion engine
+        var countries = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: countries
+        });
+        
+        // Initializing the typeahead
+        $('.typeahead').typeahead({
+            hint: true,
+            highlight: true, /* Enable substring highlighting */
+            minLength: 1 /* Specify minimum characters required for showing result */
+        },
+        {
+            name: 'countries',
+            source: countries
+        });
+    });  
+</script>
+
+{% endblock %}

@@ -79,7 +79,7 @@ def HistPerCountryLong(country):
         try:
             myValue = basics['history']['cases'][i]
             casesT[i] = myValue
-            newCases[i] = myValue - currentCases
+            newCases[i] = max(myValue - currentCases,0)
             casesPerOneMillion[i] = round(myValue/denom,0)
             currentCases = myValue
         except(KeyError):
@@ -97,7 +97,7 @@ def HistPerCountryLong(country):
         try:
             myValue = basics['history']['deaths'][i]
             deathsT[i] = myValue
-            newDeaths[i] = myValue - currentDeaths
+            newDeaths[i] = max(myValue - currentDeaths,0)
             deathsPerOneMillion[i] = round(myValue/denom,0)
             currentDeaths = myValue
         except(KeyError):
@@ -115,7 +115,7 @@ def HistPerCountryLong(country):
         try:
             myValue = basics['history']['recovered'][i]
             recoveredT[i] = myValue
-            newRecovered[i] = myValue - currentRecovered
+            newRecovered[i] = max(myValue - currentRecovered,0)
             recoveredPerOneMillion[i] = round(myValue/denom,0)
             currentRecovered = myValue
         except(KeyError):
@@ -332,10 +332,60 @@ def ColorList(number):
     colors=colors[0:number]
     return colors
 
+def KPIList(country):
+    """
+    This function returns a list with 6 KPIs used in the Spider graph
+    Cases, Deaths, Recovered, CasesPer1MLN, DeathsPer1MLN, TestsPer1MLN   
+    """
+
+    content = HeadlinesPerCountry(country)
+    KPIlist = []
+    KPIlist.append(content['cases'])
+    KPIlist.append(content['deaths'])
+    KPIlist.append(content['recovered'])
+    KPIlist.append(content['casesPerOneMillion'])
+    KPIlist.append(content['deathsPerOneMillion'])
+    KPIlist.append(content['testsPerOneMillion'])
+
+    return KPIlist
+
+def SinceDayX(country):
+    """
+    This function returns a list with datapoints representing the 7 day average number of Deaths 
+    starting on the day a country reported more than 100 Deaths cumulatively
+    """
+
+    history = HistPerCountry(country)
+
+    # create list for the average number of deaths and initialise two support items
+    averageDeaths=[]
+    currentDeaths = 0
+    lastDeaths=[0,0,0,0,0,0,0]
+
+    for i in history['history']['deaths']:
+        try:
+            myValue = history['history']['deaths'][i]
+            
+            lastDeaths.pop(0)
+            lastDeaths.append(max(myValue - currentDeaths,0))
+            if myValue > 100:
+                averageDeaths.append(round(np.mean(lastDeaths),1))
+
+            currentDeaths = myValue
+
+        except(KeyError):
+            lastDeaths.pop(0)
+            lastDeaths.append(0)
+            if myValue > 100:
+                averageDeaths.append(round(np.mean(lastDeaths),0))
+
+    return averageDeaths
+
 if __name__ == "__main__":
      
-    gr = HistPerCountryLong('Netherlands')
-    print(gr)
+    content = SinceDayX("France")
+    print(content)
+
 
 
 

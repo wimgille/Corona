@@ -6,26 +6,142 @@
 
 {% block main %}
     
-    <div class="row mb-4">
-        <H2>Select another country:</H2>
-        <div class="col-sm-12">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Select your country
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {% for country in countryList %}
-                    <a class="dropdown-item" href="{{ url_for('compare', country=country) }}">{{ country }}</a>
-                {% endfor %}
+<div class="containter-fluid">
+    <form action="/compare" method="post" id="compForm">
+        <div class="row" style="padding-bottom: 50px;">
+            <div class="col-sm-4" style="padding-bottom: 100px;">
+                <div class="bs-example">
+                    <h2>Country 1: </h2>
+                    <input type="text" class="typeahead tt-query" autocomplete="off" spellcheck="false" name="country1" style="width: 150%">
                 </div>
             </div>
+            <div class="col-sm-4" style="padding-bottom: 100px;">
+                <div class="bs-example">
+                    <h2>Country 2: </h2>
+                    <input type="text" class="typeahead tt-query" autocomplete="off" spellcheck="false" name="country2" style="width: 150%">
+                </div>
+            </div>
+            <div class="col-sm-4" style="padding-top: 40px;" style="padding-bottom: 100px;">
+                <button class="btn btn-primary" type="submit">Compare</button>
+            </div>
         </div>
-    </div>
+    </form>
+</div>
     
+    <script type="text/javascript">
+        $(document).ready(function(){
+            // Defining the local dataset
+            var countries = [{% for item in countryList %} "{{item}}", {% endfor %}];
+    
+            // Constructing the suggestion engine
+            var countries = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.whitespace,
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                local: countries
+            });
+            
+            // Initializing the typeahead
+            $('.typeahead').typeahead({
+                hint: true,
+                highlight: true, /* Enable substring highlighting */
+                minLength: 1 /* Specify minimum characters required for showing result */
+            },
+            {
+                name: 'countries',
+                source: countries
+            });
+        });  
+    </script>
+        
     <hr>
 
     <div class="row mb-4">
-        <h2>Compering the Netherlands vs {{ country }}</h2>
+        <div class="col-sm-6">
+            <h3>Comparing {{ country1 }} vs {{ country2 }} current numbers</h2>
+            <canvas id="chartjs-radar"></canvas>
+        </div>
+        <div class="col-sm-6">
+            <h3>Avg (last 7 days) number of deaths since the total number of deaths reached 100</h2>
+            <canvas id="chartjs-line"></canvas>
+        </div>
+    </div>
+
+    <script>
+    new Chart(document.getElementById("chartjs-radar"),
+        {"type":"radar",
+        "data":
+            {"labels":["Total Cases","Total Deaths","Total Recovered","Cases Per 1 MLN","Deaths Per 1 MLN","Tests Per 1 MLN"],
+            "datasets":[
+                {"label":"Statistics for {{ country1 }}",
+                "data":[{% for item in KPIcountry1 %}
+                     "{{item}}",
+                    {% endfor %}],
+                "fill":true,
+                "backgroundColor":"rgba(224,17,95,0.2)",
+                "borderColor":"rgba(224,17,95,0.8)",
+                "pointBackgroundColor":"rgb(224,17,95)",
+                "pointBorderColor":"#fff",
+                "pointHoverBackgroundColor":"#fff",
+                "pointHoverBorderColor":"rgb(224,17,95)"},
+    
+                {"label":"Statistics for {{ country2 }}",
+                "data":[{% for item in KPIcountry2 %}
+                     "{{item}}",
+                    {% endfor %}],
+                "fill":true,
+                "backgroundColor":"rgba(75,192,192, 0.2)",
+                "borderColor":"rgba(75,192,192,0.8)",
+                "pointBackgroundColor":"rgb(75,192,192)",
+                "pointBorderColor":"#fff",
+                "pointHoverBackgroundColor":"#fff",
+                "pointHoverBorderColor":"rgb(75,192,192)"}
+                ]
+            },
+        "options":
+            {"elements":
+                {"line":
+                    {"tension":0,
+                    "borderWidth":3}
+                }
+            }
+        }
+    );
+    </script>
+    
+    <script>
+    new Chart(document.getElementById("chartjs-line"),
+        {"type":"line",
+        "data":{
+            "labels":[{% for item in labels %}
+                     "{{item}}",
+                    {% endfor %}],
+            "datasets":[
+                {"label":"{{ country1 }}",
+                "data":[{% for item in avgdeaths %}
+                     "{{item}}",
+                    {% endfor %}],
+                "fill":false,
+                "borderColor":"rgba(224,17,95,0.8)",
+                "lineTension":0.1},
+
+                {"label":"{{ country2 }}",
+                "data":[{% for item in avgdeaths2 %}
+                     "{{item}}",
+                    {% endfor %}],
+                "fill":false,
+                "borderColor":"rgba(75,192,192,0.8)",
+                "lineTension":0.1}
+            ]
+        },
+        "options":{}
+        }
+    );
+    </script>
+
+    <hr>
+
+    <div class="row mb-4">
+        <h3>Comparing {{ country1 }} vs {{ country2 }} historical data</h3>
     </div>
 
     <div class="row mb-4">
@@ -36,6 +152,9 @@
             <canvas id="myChart"></canvas>
         </div>
     </div>
+
+    <hr>
+
     <div class="row mb-4">    
         <div class="col-sm-6">
             <canvas id="myChart3"></canvas>
@@ -56,7 +175,7 @@
                      "{{item}}",
                     {% endfor %}],
             datasets : [{
-                label: 'Deaths per 1 mln {{ country }}',
+                label: 'Deaths per 1 mln {{ country1 }}',
                 fill: true,
                 lineTension: 0.1,
                 backgroundColor: "rgba(224,17,95,0.4)",
@@ -80,7 +199,7 @@
                 spanGaps: false
             },
             {
-                label: 'Deaths per 1 mln Netherlands',
+                label: 'Deaths per 1 mln {{ country2 }}',
                 fill: true,
                 lineTension: 0.1,
                 backgroundColor: "rgba(75,192,192,0.4)",
@@ -98,7 +217,7 @@
                 pointHoverBorderWidth: 2,
                 pointRadius: 1,
                 pointHitRadius: 10,
-                data : [{% for item in deathsNL %}
+                data : [{% for item in deaths2 %}
                         {{item}},
                       {% endfor %}],
                 spanGaps: false
@@ -126,7 +245,7 @@
                      "{{item}}",
                     {% endfor %}],
             datasets : [{
-                label: 'Cases per 1 mln {{ country }}',
+                label: 'Cases per 1 mln {{ country1 }}',
                 fill: true,
                 lineTension: 0.1,
                 backgroundColor: "rgba(224,17,95,0.4)",
@@ -150,7 +269,7 @@
                 spanGaps: false
             },
             {
-                label: 'Cases per 1 mln Netherlands',
+                label: 'Cases per 1 mln {{ country2 }}',
                 fill: true,
                 lineTension: 0.1,
                 backgroundColor: "rgba(75,192,192,0.4)",
@@ -168,7 +287,7 @@
                 pointHoverBorderWidth: 2,
                 pointRadius: 1,
                 pointHitRadius: 10,
-                data : [{% for item in casesNL %}
+                data : [{% for item in cases2 %}
                         {{item}},
                       {% endfor %}],
                 spanGaps: false
@@ -196,7 +315,7 @@
                  "{{item}}",
                 {% endfor %}],
         datasets : [{
-            label: 'New Cases for {{ country }}',
+            label: 'New Cases for {{ country1 }}',
             fill: true,
             lineTension: 0.1,
             backgroundColor: "rgba(224,17,95,0.4)",
@@ -220,7 +339,7 @@
             spanGaps: false
             },
             {
-            label: 'New Cases for the Netherlands',
+            label: 'New Cases for {{ country2 }}',
             fill: true,
             lineTension: 0.1,
             backgroundColor: "rgba(75,192,192,0.4)",
@@ -238,7 +357,7 @@
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data : [{% for item in newcasesNL %}
+            data : [{% for item in newcases2 %}
                     {{item}},
                   {% endfor %}],
             spanGaps: false
@@ -266,7 +385,7 @@
                  "{{item}}",
                 {% endfor %}],
         datasets : [{
-            label: 'New Deaths for {{ country }}',
+            label: 'New Deaths for {{ country1 }}',
             fill: true,
             lineTension: 0.1,
             backgroundColor: "rgba(224,17,95,0.4)",
@@ -290,7 +409,7 @@
             spanGaps: false
         },
         {
-            label: 'New Deaths for the Netherlands',
+            label: 'New Deaths for {{ country2 }}',
             fill: true,
             lineTension: 0.1,
             backgroundColor: "rgba(75,192,192,0.4)",
@@ -308,7 +427,7 @@
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data : [{% for item in newdeathsNL %}
+            data : [{% for item in newdeaths2 %}
                     {{item}},
                   {% endfor %}],
             spanGaps: false
