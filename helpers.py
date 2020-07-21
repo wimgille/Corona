@@ -21,7 +21,8 @@ def HistPerCountry(country):
     "cases":{"1/22/20":0,"1/23/20":0},
     "deaths":{"1/22/20":0,"1/23/20":0},
     "recovered":{"1/22/20":0,"1/23/20":0}
-    }}   
+    }}
+    start date varies per country   
     """
  
     # Contact API
@@ -141,7 +142,7 @@ def HistPerCountryLong(country):
 
 def HeadlinesPerCountry(country):
     """
-    Look up headline statistics per country. Function returns a dict with 
+    Look up headline statistics per country starting as of 1 Jan 2020. Function returns a dict with 
     {"name":,
     "countryInfo":{}
     "cases":,"todayCases":,"deaths":,"todayDeaths":,"recovered":,"active":,"critical":,
@@ -381,10 +382,64 @@ def SinceDayX(country):
 
     return averageDeaths
 
+def WeeklyDeathsPerCountry(country):
+    """
+    This function takes a dictionary of daily stats and returns a list of weekly stats
+    """
+
+    basics = HistPerCountry(country)
+    dates = ListOfDates(basics['history']['deaths'])
+    deaths={}
+    
+    for i in dates:
+        try:
+            deaths[i] = basics['history']['deaths'][i]
+        except(KeyError):
+            deaths[i] = 0
+
+    output=[]
+
+    for i in range(len(dates)):
+        if ((i+1)%7)==0:
+            try:
+                number = max(deaths[dates[i]]-deaths[dates[i-7]],0)
+            except(KeyError):
+                number = 0
+            output.append(number)
+
+    return output
+
+def TotalDeathsEU():
+    """
+    This funtion returns a dataframe of weekly deaths for all the 24 countries/regions included in the 
+    Euromomo dataset. 
+    
+    Countries included are: Austria, Belgium, Denmark, Estonia, Finland, France, Germany (Berlin and Hesse only), 
+    Greece, Hungary, Ireland, Italy, Luxembourg, Malta, Netherlands, Norway, Portugal, Spain, Sweden, 
+    Switzerland, UK (England, Northern Ireland, Scotland and Wales).
+
+    We adjusted the German numbers by a factor 10.1/83.2 to adjust for the number of inhabitants in Hesse/Berlin
+    """
+
+    countries = ["Austria", "Belgium", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", \
+    "Ireland", "Italy", "Luxembourg", "Malta", "Netherlands", "Norway", "Portugal", "Spain", "Sweden", "Switzerland", "UK"]
+    correction = 10.1/83.2
+    df=pd.DataFrame()
+    
+    for country in countries:
+        cList = WeeklyDeathsPerCountry(country)
+        df[country]=cList
+
+    df['Germany'] = df['Germany'].multiply(correction).round(0)
+    df['Europe24'] = df.sum(axis=1)
+
+    return df
+
 if __name__ == "__main__":
      
-    content = SinceDayX("France")
+    deaths = TotalDeathsEU()
     print(content)
+    
 
 
 

@@ -5,8 +5,34 @@
 {% endblock %}
 
 {% block main %}
-    <p>
-        This is going to be the body of the Index Page
+    <p>I started this project as part of my CS50w course on EDX.org. I have been experimenting with the following technologies and features:</p>
+    <p><b>Languages:</b> Python (including Flask, Dataframes, BS4), Jinja, HTML (Bootstrap 4), Javascript (various modules)</p>
+    <p><b>Javascript libraries:</b> Chart.js, Bootstrap Datatables, Twitter Typeahead</p>
+    <p><b>Datasources:</b>
+        <ul>
+            <li>For the COVID19 API we use https://corona.lmao.ninja/ where we predominantly rely on John Hopkins University as the ultimate source.</li>
+            <li>In addition we extract data on Excess Mortality in Europe from www.euromomo.eu.</li>
+        </ul>
+    None of the data is stored locally. We dynamically extract the data, perform the neccesary calculations and draw the charts on the fly.
     </p>
+
+    <p><b>The following app routes are available</b>
+        <ul>
+            <li>Index: with acknowledgements and intro</li>
+            <li>Country: basic stats and charts for all countries (on 1 June 2020 already 214 and counting) available in the API</li>
+            <li>Rankings: a searcheable overview of the most relevant KPIs per country</li>
+            <li>Buble Chart: plotting the top 20 countries (based on number of deaths) along four axis (absolute # of deaths, test and cases per 1 million and deaths per 100k)</li>
+            <li>Compare: compareing the main stats and charts for two countries</li>
+            <li>Excess Mortality: comparing the excess mortality with the reported number of Corona deaths for 24 european regions</li>
+        </ul>
+    </p>
+    <p>Whenever I got stuck I enlisted the help of friends. <b>Special tx go to:</b>
+        <ul>
+            <li>Rob (helping me to get the project online on Heroku)</li>
+            <li>Jurjen (helping me out on some Charts.js elements)</li>
+            <li>Hugo (helping me to get the data from Euromomo)</li>
+            <li>Other friends (for the endless list of ideas and reporting bugs)</li>
+        </ul>
+</p>
 
 {% endblock %}

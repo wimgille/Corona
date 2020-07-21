@@ -55,13 +55,21 @@
         
     <hr>
 
+    <p>On this page we compare two countries head to head</p>
+    <p>On the radar chart (top left) we take the most important KPIs and index the smallest country of the two relative to the biggest of the two.
+    For each KPI one country will be at 100%, while the other country is at the number between 0 and 100%. So if we are comparing two countries where one has 200 deaths and the other 50 deaths, the biggest will be at 100 and the smallest at 25
+    </p>
+    <p>
+        The second chart displays the average number of deaths over the last 7 days. The charts start on the first day that country reported more than 100 deaths.
+    </p>
+
     <div class="row mb-4">
         <div class="col-sm-6">
-            <h3>Comparing {{ country1 }} vs {{ country2 }} current numbers</h2>
+            <h3>Comparing {{ country1 }} vs {{ country2 }} current numbers</h3>
             <canvas id="chartjs-radar"></canvas>
         </div>
         <div class="col-sm-6">
-            <h3>Avg (last 7 days) number of deaths since the total number of deaths reached 100</h2>
+            <h3>Avg (last 7 days) number of deaths since the total number of deaths reached 100</h3>
             <canvas id="chartjs-line"></canvas>
         </div>
     </div>

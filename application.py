@@ -1,14 +1,15 @@
 from flask import Flask, session, render_template, request, redirect, jsonify, json
-from flask_session import Session
+#from flask_session import Session
 from helpers import TopList, CountryList,HeadlinesPerCountry,CountryList,HistPerCountry,ConvertToList
-from helpers import ColorList,ListOfDates,HistPerCountryLong,KPIList,SinceDayX
+from helpers import ColorList,ListOfDates,HistPerCountryLong,KPIList,SinceDayX,TotalDeathsEU
+from scraper import ExcessMort
 
 app = Flask(__name__)
 
 # Configure session to use filesystem
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
+#Session(app)
 
 @app.route("/")
 def index():
@@ -118,8 +119,12 @@ def compare():
             KPIcountry2 = KPIList(country2)
             for i in range(len(KPIcountry1)):
                 maxKPI = max(KPIcountry1[i],KPIcountry2[i])
-                KPIcountry1[i]=(KPIcountry1[i]/maxKPI)*100
-                KPIcountry2[i]=(KPIcountry2[i]/maxKPI)*100
+                if maxKPI == 0:
+                    KPIcountry1[i]=0
+                    KPIcountry2[i]=0
+                else:
+                    KPIcountry1[i]=(KPIcountry1[i]/maxKPI)*100
+                    KPIcountry2[i]=(KPIcountry2[i]/maxKPI)*100
 
             # Make labels for the line chart
             maxLength = max(len(avgdeaths),len(avgdeaths2))
@@ -136,3 +141,27 @@ def compare():
 
     else:
         return render_template("apology.html", message="method not allowed"), 405
+
+
+@app.route("/ExcessMortality")
+def excess_mort():
+    """Comparing the official Corona stats with excess mortality in Europe"""
+    
+    # the graphs start in the summer of 2016
+    start=75 
+    source = ExcessMort()
+    totalDeaths = source['total_number_deaths_tot'][start:]
+    baseline = source['baseline_deaths_tot'][start:]
+    excess = source['excess_deaths_tot'][start:]
+    dates = source['Date'][start:]
+    
+    # to compare with the corona stats we start on 1 Jan 2020
+    Nr = list(dates).index("2020-01")
+    totalDeaths20 = totalDeaths[Nr:]
+    baseline20 = baseline[Nr:]
+    dates20 = dates[Nr:]
+    excess20 = excess[Nr:]
+    corona20 = TotalDeathsEU()
+    corona20 = corona20['Europe24']
+
+    return render_template("euromomo.html", deaths=totalDeaths, dates=dates, baseline=baseline, dates20=dates20, excess20=excess20, corona20=corona20)
