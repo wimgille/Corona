@@ -56,7 +56,7 @@ def country(country):
 def graph():
     """displays a bubble chart with four dimensions for each of the top countries"""
 
-    numberCountries = 20
+    numberCountries = 25
 
     rankingsJSON = TopList(numberCountries,'json')
     rankingsJSON = json.loads(rankingsJSON)
@@ -148,7 +148,7 @@ def excess_mort():
     """Comparing the official Corona stats with excess mortality in Europe"""
     
     # the graphs start in the summer of 2016
-    start=75 
+    start=0 
     source = ExcessMort()
     totalDeaths = source['total_number_deaths_tot'][start:]
     baseline = source['baseline_deaths_tot'][start:]

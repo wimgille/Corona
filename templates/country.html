@@ -28,8 +28,8 @@
         <H3>Today's statistics for {{ content.name }}</H3>
         <div class="col-sm-12">
             <ul>
-              <li>Cases: {{ content.todayCases }}</li>
-              <li>Deaths: {{ content.todayDeaths }}</li>
+              <li>Cases: {{ "{:,.0f}".format(content.todayCases) }}</li>
+              <li>Deaths: {{ "{:,.0f}".format(content.todayDeaths) }}</li>
             </ul>  
         </div>
     </div>
@@ -38,20 +38,20 @@
         <div class="col-sm">
             <H3>Totals</H3>
             <ul>
-                <li>Cases: {{ content.cases }}</li>
-                <li>Deaths: {{ content.deaths }}</li>
-                <li>Recovered: {{ content.recovered }}</li>
-                <li>Active: {{ content.active }}</li>
-                <li>Critical: {{ content.critical }}</li>
+                <li>Cases: {{ "{:,.0f}".format(content.cases) }}</li>
+                <li>Deaths: {{ "{:,.0f}".format(content.deaths) }}</li>
+                <li>Recovered: {{ "{:,.0f}".format(content.recovered) }}</li>
+                <li>Active: {{ "{:,.0f}".format(content.active) }}</li>
+                <li>Critical: {{ "{:,.0f}".format(content.critical) }}</li>
             </ul>  
         </div>
         
         <div class="col-sm">
             <H3>Normalised statistics</H3>
             <ul>
-              <li>Cases per 1 million: {{ content.casesPerOneMillion }}</li>
-              <li>Deaths per 1 million: {{ content.deathsPerOneMillion }}</li>
-              <li>Tests per 1 million: {{ content.testsPerOneMillion }}</li>
+              <li>Cases per 1 million: {{ "{:,.0f}".format(content.casesPerOneMillion) }}</li>
+              <li>Deaths per 1 million: {{ "{:,.0f}".format(content.deathsPerOneMillion) }}</li>
+              <li>Tests per 1 million: {{ "{:,.0f}".format(content.testsPerOneMillion) }}</li>
           </ul>  
         </div>
     </div>
@@ -97,7 +97,7 @@
             pointRadius: 1,
             pointHitRadius: 10,
             data : [{% for item in deaths %}
-                      {{item}},
+                      {{ item }},
                     {% endfor %}],
             spanGaps: false
             },
@@ -121,7 +121,7 @@
             pointRadius: 1,
             pointHitRadius: 10,
             data : [{% for item in cases %}
-                      {{item}},
+                      {{ item }},
                     {% endfor %}],
             spanGaps: false
             }]
@@ -135,6 +135,21 @@
       var myChart = new Chart(ctx, {
         type: 'bar',
         data: chartData,
+        options: {
+          scales: {
+              xAxes: [{
+                  ticks: {}
+              }],
+              yAxes: [{
+                  ticks: {
+                      beginAtZero: true,
+                      callback: function(value, index, values) {
+                          return Intl.NumberFormat("en-US").format((value));
+                          }
+                  }
+              }]
+          }
+        }
       });
     </script>
 
@@ -206,6 +221,21 @@
   var myChart2 = new Chart(ctx2, {
     type: 'bar',
     data: chartData2,
+    options: {
+          scales: {
+              xAxes: [{
+                  ticks: {}
+              }],
+              yAxes: [{
+                  ticks: {
+                      beginAtZero: true,
+                      callback: function(value, index, values) {
+                          return Intl.NumberFormat("en-US").format((value));
+                          }
+                  }
+              }]
+          }
+    }
   });
 </script>
     

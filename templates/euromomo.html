@@ -6,7 +6,19 @@
 
 {% block main %}
     <p>
-        Rebuilding the Euromona charts
+      EuroMOMO is a European mortality monitoring activity, aiming to detect and measure excess deaths related to seasonal influenza, 
+      pandemics and other public health threats. As can be seen below the European flu season usually starts between week 45 and 50.
+      So lets hope we find a vacine before October. For the orrigal data and some cool graphs please visit <a href="https://www.euromomo.eu">EuroMOMO</a>.
+    </p>
+    <p>
+      Official national mortality statistics are provided weekly from the 24 European countries in the EuroMOMO collaborative network, 
+      supported by the European Centre for Disease Prevention and Control (ECDC) and the World Health Organization (WHO), and hosted 
+      by Statens Serum Institut, Denmark.
+    </p>
+    <p>
+      These graphs were generated with data from all 24 participating countries: Austria, Belgium, Denmark, Estonia, Finland, France, 
+      Germany (Berlin), Germany (Hesse), Greece, Hungary, Ireland, Italy, Luxembourg, Malta, Netherlands, Norway, Portugal, Spain, 
+      Sweden, Switzerland, UK (England), UK (Northern Ireland), UK (Scotland), UK (Wales).
     </p>
 
     <div class="row mb-4">
@@ -14,6 +26,12 @@
           <canvas id="myChart"></canvas>
         </div>
     </div>
+
+    <p>
+      In the chart below we compared the access mortality in the 24 countries / regions participating in the euromomo network with
+      the official registered Corona deaths. It appears the numbers provided by European authorities are reasonably acurate.
+    </p>
+
     <div class="row mb-4">
         <div class="col-sm">
           <canvas id="myChart2"></canvas>

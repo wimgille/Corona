@@ -25,17 +25,17 @@
         <tbody>
             {% for country in countries%}
             <tr>
-                <td scope="col">'rank'</td>
+                <td scope="col">{{ "{:,.0f}".format(country.Rank) }}</td>
                 <td scope="col">
                     <a href="{{ url_for('country', country=country.Name) }}">
                         {{ country.Name }}
                     </a>
                 </td>
-                <td scope="col">{{ country.Cases }}</td>
-                <td scope="col">{{ country.Deaths }}</td>
-                <td scope="col">{{ country.CasesOneMLN }}</td>
-                <td scope="col">{{ country.DeathsOneMLN }}</td>
-                <td scope="col">{{ country.TestsOneMLN }}</td>
+                <td scope="col">{{ "{:,.0f}".format(country.Cases) }}</td>
+                <td scope="col">{{ "{:,.0f}".format(country.Deaths) }}</td>
+                <td scope="col">{{ "{:,.0f}".format(country.CasesOneMLN) }}</td>
+                <td scope="col">{{ "{:,.0f}".format(country.DeathsOneMLN) }}</td>
+                <td scope="col">{{ "{:,.0f}".format(country.TestsOneMLN) }}</td>
                 
             </tr>
             {% endfor %}

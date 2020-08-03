@@ -10,7 +10,7 @@
 <body>
 
 	<h1>Snapshot of the most impacted countries</h1>
-	<p>The bubble chart below displays the top 20 countries (as based on the absolute number of deaths) along four axis</p>
+	<p>The bubble chart below displays the top 25 countries (as based on the absolute number of deaths) along four axis</p>
 	<ul>
 		<li>The color ranks countries based on the absolute deaths from high (red) to low (green)</li>
 		<li>The y axis represents the number of cases per 1 mln inhabitants</li>
@@ -50,13 +50,25 @@
 			  scaleLabel: {
 				display: true,
 				labelString: "Cases / One Million"
-			  }
+			  },
+			  ticks: {
+				beginAtZero: true,
+				callback: function(value, index, values) {
+					return Intl.NumberFormat("en-US").format((value));
+					}
+				}
 			}],
 			xAxes: [{ 
 			  scaleLabel: {
 				display: true,
 				labelString: "Tests / One Million"
-			  }
+			  },
+			  ticks: {
+				beginAtZero: true,
+				callback: function(value, index, values) {
+					return Intl.NumberFormat("en-US").format((value));
+					}
+				}
 			}]
 		  }
 		}
@@ -64,5 +76,3 @@
 </script>
 </body>
 {% endblock %}
-
-

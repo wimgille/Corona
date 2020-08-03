@@ -280,12 +280,17 @@ def TopList(number, returnFormat):
             rankingsCasesOneMLN.append(countryStats[i]["casesPerOneMillion"])
             rankingsDeathsOneMLN.append(countryStats[i]["deathsPerOneMillion"])
             rankingsTestsOneMLN.append(countryStats[i]["testsPerOneMillion"])
-
+        
     # turn the lists into a dataframe and sort on the number of Deaths
         zippedList =  list(zip(countryNames, rankingsDeaths, rankingsCases, rankingsCasesOneMLN, rankingsDeathsOneMLN, rankingsTestsOneMLN))
         dfObj = pd.DataFrame(zippedList, columns = ['Name', 'Deaths', 'Cases', 'CasesOneMLN', 'DeathsOneMLN', 'TestsOneMLN'])
         dfObj = dfObj.sort_values(by=['Deaths'],ascending=False)
-
+    
+    # Add the rank column
+        dfObj = dfObj.reset_index(drop=True)
+        dfObj = dfObj.reset_index(drop=False)
+        dfObj = dfObj.rename(columns = {'index':'Rank'})
+    
     # decide the length of the list. Either top x or all
         if number == 'All':
             number = len(countryStats)-1
@@ -435,10 +440,14 @@ def TotalDeathsEU():
 
     return df
 
+def formatnumber(value):
+    """Format value as 1,000,000 with zero digits behind the comma."""
+    return f"{value:,.0f}"
+
 if __name__ == "__main__":
      
-    deaths = TotalDeathsEU()
-    print(content)
+    rank_list = TopList(20,'df')
+    print(rank_list)
     
 
 

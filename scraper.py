@@ -47,7 +47,7 @@ def ExcessMort():
 
     myURL = FindURL()
     if (myURL == 'Not Found'):
-        myURL = 'https://www.euromomo.eu/component---src-templates-graphs-and-maps-js-c9af76ec69719f4fd96a.js'
+        myURL = 'https://www.euromomo.eu/component---src-templates-graphs-and-maps-js-32b0c7c01e7ecdb2bd68.js'
 
     r = s.get(myURL, headers=headers).text
     # week 20 https://www.euromomo.eu/component---src-templates-graphs-and-maps-js-1fb13ae0d6683c6d2b12.js

@@ -141,7 +141,21 @@
                 "lineTension":0.1}
             ]
         },
-        "options":{}
+        options: {
+                scales: {
+                xAxes: [{
+                    ticks: {}
+                }],
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: true,
+                    callback: function(value, index, values) {
+                    return Intl.NumberFormat("en-US").format((value));
+                    }
+                  }
+                }]
+                }
+            }
         }
     );
     </script>
@@ -239,6 +253,21 @@
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: chartData,
+            options: {
+                scales: {
+                xAxes: [{
+                    ticks: {}
+                }],
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: true,
+                    callback: function(value, index, values) {
+                    return Intl.NumberFormat("en-US").format((value));
+                    }
+                  }
+                }]
+                }
+            }
         });
     </script>
   
@@ -309,6 +338,21 @@
         var myChart2 = new Chart(ctx2, {
             type: 'bar',
             data: chartData2,
+            options: {
+                scales: {
+                    xAxes: [{
+                    ticks: {}
+                    }],
+                    yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        callback: function(value, index, values) {
+                        return Intl.NumberFormat("en-US").format((value));
+                        }
+                    }
+                    }]
+                }
+            }
         });
     </script>
 
@@ -379,6 +423,21 @@
     var myChart3 = new Chart(ctx3, {
         type: 'bar',
         data: chartData3,
+        options: {
+            scales: {
+                xAxes: [{
+                  ticks: {}
+                }],
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: true,
+                    callback: function(value, index, values) {
+                    return Intl.NumberFormat("en-US").format((value));
+                    }
+                  }
+                }]
+            }
+        }
     });
 </script>
 
@@ -449,6 +508,21 @@
     var myChart4 = new Chart(ctx4, {
         type: 'bar',
         data: chartData4,
+        options: {
+            scales: {
+                xAxes: [{
+                  ticks: {}
+                }],
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: true,
+                    callback: function(value, index, values) {
+                    return Intl.NumberFormat("en-US").format((value));
+                    }
+                  }
+                }]
+            }
+        }
     });
 </script>
 
