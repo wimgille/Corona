@@ -2,8 +2,18 @@
 # -*- coding: utf-8 -*-
 """
 This will be the helper file that will contain the functions for 
-1) Loading new statistics per country
-2) TO BE DEFINED
+1) HistPerCountry
+2) HistPerCountryLong
+3) HeadlinesPerCountry
+4) CountryList
+5) ConvertToList
+6) ListOfDates
+7) TopList
+8) ColorList
+9) KPIList
+10) SinceDayX
+11) WeeklyDeathsPerCountry
+12) TotalDeathsEU
 """
 
 import numpy as np

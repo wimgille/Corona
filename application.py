@@ -1,7 +1,8 @@
 from flask import Flask, session, render_template, request, redirect, jsonify, json
 #from flask_session import Session
-from helpers import TopList, CountryList,HeadlinesPerCountry,CountryList,HistPerCountry,ConvertToList
+from helpers import TopList, CountryList,HeadlinesPerCountry,HistPerCountry,ConvertToList
 from helpers import ColorList,ListOfDates,HistPerCountryLong,KPIList,SinceDayX,TotalDeathsEU
+from americas import StatesList,HeadlinesPerStateWM, ConvertWMtoJH, HistPerState, HistPerStateLong
 from scraper import ExcessMort
 
 app = Flask(__name__)
@@ -165,3 +166,41 @@ def excess_mort():
     corona20 = corona20['Europe24']
 
     return render_template("euromomo.html", deaths=totalDeaths, dates=dates, baseline=baseline, dates20=dates20, excess20=excess20, corona20=corona20)
+
+@app.route("/states", methods=["GET"])
+def statesGet():
+    """get the list of all US states"""
+    
+    # User reached route via GET
+    if request.method == "GET":
+        
+        stateList = StatesList()
+        return render_template("statesGET.html", stateList=stateList)
+        
+    # User reached route via POST
+    else:
+        return render_template("apology.html", message="Method not allowed"), 405
+
+@app.route("/states/<string:state>", methods=["GET"])
+def state(state):
+    """get an overview of the key stats per US state"""
+    
+    # User reached route via GET
+    if request.method == "GET":
+        
+        stateWM = ConvertWMtoJH('JH', state)
+        content = HeadlinesPerStateWM(stateWM)
+        stateList = StatesList()
+        
+        history = HistPerStateLong(state)
+        deaths = ConvertToList(history["history"]["deaths"])
+        newdeaths = ConvertToList(history["history"]["newDeaths"])
+        cases = ConvertToList(history["history"]["cases"])
+        newcases = ConvertToList(history["history"]["newCases"])
+        dates = ListOfDates(history["history"]["deaths"])
+        
+        return render_template("us_states.html", content=content, stateList=stateList, newdeaths=newdeaths, deaths=deaths, dates=dates, cases=cases, newcases=newcases)
+       
+    # User reached route via POST
+    else:
+        return render_template("apology.html", message="Method not allowed"), 405

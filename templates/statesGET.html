@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Select your US state
+{% endblock %}
+
+{% block main %}
+    
+    <div class="row">
+        <H2>Select a US state:</H2>
+        <div class="col-sm-12">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Select a US state
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for state in stateList %}
+                        <a class="dropdown-item" href="{{ url_for('state', state=state) }}">{{ state }}</a>
+                    {% endfor %}
+                    </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

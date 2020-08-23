@@ -1,21 +1,21 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Country Page for {{ content.name }}
+    US state Page for {{ content.name }}
 {% endblock %}
 
 {% block main %}
     
     <div class="row mb-4">
-        <H2>Select another country:</H2>
+        <H2>Select another US state:</H2>
         <div class="col-sm-12">
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Select your country
+                  Select your state
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {% for country in countryList %}
-                    <a class="dropdown-item" href="{{ url_for('country', country=country) }}">{{ country }}</a>
+                {% for state in stateList %}
+                    <a class="dropdown-item" href="{{ url_for('state', state=state) }}">{{ state }}</a>
                 {% endfor %}
                 </div>
             </div>
@@ -40,9 +40,8 @@
             <ul>
                 <li>Cases: {{ "{:,.0f}".format(content.cases) }}</li>
                 <li>Deaths: {{ "{:,.0f}".format(content.deaths) }}</li>
-                <li>Recovered: {{ "{:,.0f}".format(content.recovered) }}</li>
                 <li>Active: {{ "{:,.0f}".format(content.active) }}</li>
-                <li>Critical: {{ "{:,.0f}".format(content.critical) }}</li>
+                
             </ul>  
         </div>
         
